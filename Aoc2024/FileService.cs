@@ -15,4 +15,11 @@ public class FileService(int day) : IFileService
         var file = LoadFile();
         return file.Split(Environment.NewLine).Where(x => !String.IsNullOrEmpty(x)).ToArray();
     }
+    public IEnumerable<IEnumerable<int>> LoadIntLines()
+    {
+        var file = LoadFile();
+        var lines = file.Split(Environment.NewLine);
+        var intLines = lines.Select(x => x.Split(" ").Select(y => int.Parse(y)));
+        return intLines;
+    }
 }
