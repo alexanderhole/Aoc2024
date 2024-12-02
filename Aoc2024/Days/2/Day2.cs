@@ -15,18 +15,22 @@ public class Day2() : BaseDay(2), IDay
         return levels[0] != levels[1] && CheckSafe(levels, levels[0] < levels[1]);
     }
 
-    private static bool CheckSafe(int[] levels, bool desc)
+    private static bool CheckSafe(IReadOnlyList<int> levels, bool desc)
     {
-        for (var i = 0; i < levels.Length - 1; i++)
+        for (var i = 0; i < levels.Count - 1; i++)
         {
+            var secondLevel = levels[i + 1];
+            var firstLevel = levels[i];
+            if (Math.Abs(firstLevel - secondLevel) > 3 || firstLevel == secondLevel)
+                return false;
             if (desc)
             {
-                if (levels[i] > levels[i + 1] || Math.Abs(levels[i] - levels[i + 1]) > 3 || levels[i] == levels[i + 1])
+                if (firstLevel > secondLevel)
                     return false;
             }
             else
-                if (levels[i] < levels[i + 1] || Math.Abs(levels[i] - levels[i + 1]) > 3 || levels[i] == levels[i + 1])
-                    return false;   
+                if (firstLevel < secondLevel)
+                    return false;
         }
         return true;
     }
@@ -34,21 +38,18 @@ public class Day2() : BaseDay(2), IDay
 
     public int RunP2()
     {
-        var rows = FileService.LoadIntLines();
         var safeReports = 0;
-        foreach (var row in rows)
+        foreach (var row in FileService.LoadIntLines())
         {
-            var levels = row.ToArray();
-            var safe = checkSafe(levels);
+            var safe = checkSafe(row.ToArray());
             if(safe)
                 safeReports += 1;
             else
-                for (var i = 0; i < levels.Length; i++)
+                for (var i = 0; i < row.Count(); i++)
                 {
-                    var firstList = levels.ToList();
+                    var firstList = row.ToList();
                     firstList.RemoveAt(i);
-                    var firstCheck = checkSafe(firstList.ToArray());
-                    if (!firstCheck) continue;
+                    if (!checkSafe(firstList.ToArray())) continue;
                     safeReports += 1;
                     break;
                 }
