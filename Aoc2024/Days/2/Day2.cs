@@ -34,7 +34,7 @@ public class Day2() : BaseDay(2), IDay
         }
         return true;
     }
-
+    
 
     public int RunP2()
     {
