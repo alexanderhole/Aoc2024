@@ -42,6 +42,26 @@ public class Day4() : BaseDay(4), IDay
 
     public int RunP2()
     {
-        return 0;
+        var counter = 0;
+        var grid = FileService.LoadGrid();
+        foreach (var item in grid.items)
+        {
+            if (item.value == 'A')
+            {
+                if ((checkNeighbour((item) => grid.GetUpLeft(item), item, "M") && 
+                    checkNeighbour((item) => grid.GetDownRight(item), item, "S")
+                    ||
+                    checkNeighbour((item) => grid.GetDownRight(item), item, "M") && 
+                    checkNeighbour((item) => grid.GetUpLeft(item), item, "S"))
+                    &&
+                    (checkNeighbour((item) => grid.GetUpRight(item), item, "M") && 
+                     checkNeighbour((item) => grid.GetDownLeft(item), item, "S")
+                     ||
+                     checkNeighbour((item) => grid.GetDownLeft(item), item, "M") && 
+                     checkNeighbour((item) => grid.GetUpRight(item), item, "S"))
+                    ) counter += 1;
+            }
+        }
+        return counter;
     }
 }
