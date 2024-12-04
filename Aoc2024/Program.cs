@@ -5,12 +5,15 @@ using Aoc2024.Days._2;
 using Aoc2024.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 Environment.SetEnvironmentVariable("test", "false");
-const int currentDay = 3;
+const int currentDay = 4;
+
 
 var serviceProvider = new ServiceCollection()
     .AddKeyedSingleton<IDay, Day1>(1)
     .AddKeyedSingleton<IDay, Day2>(2)
     .AddKeyedSingleton<IDay, Day3>(3)
+    .AddKeyedSingleton<IDay, Day4>(4)
+
 
     .BuildServiceProvider();
 for (int i = 1; i <= currentDay; i++)

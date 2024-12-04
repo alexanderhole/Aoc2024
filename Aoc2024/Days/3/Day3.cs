@@ -8,6 +8,7 @@ public class Day3() : BaseDay(3), IDay
 {
     public int RunP1()
     {
+        Console.WriteLine();
         var fileString = FileService.LoadFile();
         var regex = new Regex("mul\\(\\d*,\\d*\\)");
         var matches = regex.Matches(fileString);
@@ -26,6 +27,23 @@ public class Day3() : BaseDay(3), IDay
 
     public int RunP2()
     {
-        return 0;
+        var fileString = FileService.LoadFile();
+        var index = 0;
+        var newString = "";
+        var regex = new Regex("(?<=don't\\(\\))(.*?)(?=do\\(\\))", RegexOptions.Singleline);
+        var output = regex.Replace(fileString, "");
+        regex = new Regex("mul\\(\\d*,\\d*\\)");
+        var matches = regex.Matches(output);
+        var result = 0;
+        foreach (var match in matches.Select(x => x.Value))
+        {
+            regex = new Regex("\\d*");
+            var enumerable = regex.Matches(match)
+                .Where(x => !string.IsNullOrEmpty(x.Value)).ToList();
+            result += enumerable
+                .Select(x => int.Parse(x.Value)).Aggregate((x,y) => x*y);
+        }
+
+        return result;
     }
 }
