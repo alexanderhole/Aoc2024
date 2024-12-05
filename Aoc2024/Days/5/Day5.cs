@@ -12,30 +12,11 @@ public class Day5() : BaseDay(5), IDay
         var lines = FileService.LoadLines();
         var rules = lines.Where(x => x.Contains("|")).ToArray();
         var pagesList = lines.Where(x => !x.Contains("|")).Select(x => x.Split(",").Select(y => int.Parse(y)).ToArray());
-        var count = 0;
         var correctSortedPages = pagesList.Where(x => AlreadyCorrect(x, rules));
-        // foreach (var page in pagesList)
-        // {
-        //     bool sorted = false;
-        //
-        //     while (!sorted)
-        //     {
-        //         sorted = true;
-        //         sorted = Sorted(page, rules, correctSortedPages, sorted);
-        //     }
-        //
-        //     var ceiling = Math.Ceiling((double)page.Length / 2);
-        //     count += page[(int)ceiling-1];
-        //     Console.WriteLine((String.Join(",",page)));
-        //     Console.WriteLine("middle: " +page[(int)ceiling-1]);
-        //
-        // ;
-        // }
         return correctSortedPages.Select(x => x[(int)(Math.Ceiling((double)x.Length) / 2)]).Sum();
-        return count;
     }
 
-    private static bool Sorted(int[] page, string[] rules, List<int[]> correctSortedPages, bool sorted)
+    private static bool Sorted(int[] page, string[] rules, bool sorted)
     {
         for (int i = 0; page.Count() > i; i++)
         {
@@ -43,7 +24,6 @@ public class Day5() : BaseDay(5), IDay
             {
                 if (rules.Contains($"{page[i]}|{page[j]}") && j < i)
                 {
-                    correctSortedPages.Remove(page);
                     (page[j], page[i]) = (page[i], page[j]);
                     sorted = false;
                 }
@@ -80,7 +60,29 @@ public class Day5() : BaseDay(5), IDay
     }
 
     public int RunP2()
-    {
-        return 0;
+    {    
+        var lines = FileService.LoadLines();
+        var rules = lines.Where(x => x.Contains("|")).ToArray();
+        var pagesList = lines.Where(x => !x.Contains("|")).Select(x => x.Split(",").Select(y => int.Parse(y)).ToArray());
+        var count = 0;
+        var incorrectSortedPages = pagesList.Where(x => !AlreadyCorrect(x, rules));
+        foreach (var page in incorrectSortedPages)
+        {
+            bool sorted = false;
+        
+            while (!sorted)
+            {
+                sorted = true;
+                sorted = Sorted(page, rules, sorted);
+            }
+        
+            var ceiling = Math.Ceiling((double)page.Length / 2);
+            count += page[(int)ceiling-1];
+            Console.WriteLine((String.Join(",",page)));
+            Console.WriteLine("middle: " +page[(int)ceiling-1]);
+        
+        ;
+        }
+        return count;
     }
 }
