@@ -10,7 +10,7 @@ public class Day4() : BaseDay(4), IDay
     {
         var counter = 0;
         var grid = FileService.LoadGrid();
-        foreach (var item in grid.items.Select(x => x.Value))
+        foreach (var item in grid.items)
         {
             if (item.value == 'X')
             {
@@ -44,7 +44,7 @@ public class Day4() : BaseDay(4), IDay
     {
         var counter = 0;
         var grid = FileService.LoadGrid();
-        foreach (var item in grid.items.Select(x => x.Value))
+        foreach (var item in grid.items)
         {
             if (item.value == 'A')
             {

@@ -24,8 +24,8 @@ public class Day6() : BaseDay(6), IDay
     private Dictionary<(int x, int y, char direction), GridCoord> GridCoords()
     {
         var grid = FileService.LoadGrid();
-        var start = grid.items.Single(x => x.Value.value == Up);
-        return HashSet(grid, start.Value);
+        var start = grid.Start;
+        return HashSet(grid, start);
     }
 
     private Dictionary<(int x, int y, char direction), GridCoord> HashSet(Grid grid, GridCoord start)
@@ -79,26 +79,23 @@ public class Day6() : BaseDay(6), IDay
     
     private char[,] Visited(GridCoord? current, Grid grid, char direction)
     {
-        char[,] visited = new char[grid.maxX, grid.maxY];
+        var visited = new char[grid.maxX, grid.maxY];
         var next = current;
+        while (current?.value != null)
         {
-            while (current?.value != null)
+            next = MoveInDirection(grid, direction, current);
+            if (next is null) break;
+            if (next?.value == Wall)
+                direction = Turn(direction);
+            else
             {
-                next = MoveInDirection(grid, direction, current);
-                if (next is null) break;
-                if (next?.value != Wall)
-                {
-                    current.Direction = direction;
-                    current = next;
-                    if(current.Coord.x < grid.maxX && current.Coord.y < grid.maxY && (char)visited[current.Coord.x, current.Coord.y] == direction )
-                        return null;
-                    if(current.Coord.x < grid.maxX && current.Coord.y < grid.maxY )
-                        visited[current.Coord.x, current.Coord.y] = direction;
-                }
-                else
-                    direction = Turn(direction);
+                if(visited[next.Coord.x, next.Coord.y] == direction )
+                    return null;
+                current = next;
+                visited[current.Coord.x, current.Coord.y] = direction;
             }
         }
+        
         return visited;
     }
 
@@ -118,16 +115,15 @@ public class Day6() : BaseDay(6), IDay
         var original  = FileService.LoadGrid();
         var path = GridCoords();
         var counter = 0;
-        var start = original.items.Single(x => x.Value.value == Up);
+        var start = original.Start;
         foreach (var places in path.DistinctBy(x => (x.Key.x, x.Key.y)))
         {
-            if(places.Value.value == Up) continue;
-            var originalValue = original.items[(places.Value.Coord.x, places.Value.Coord.y)].value;
-            original.items[(places.Value.Coord.x, places.Value.Coord.y)].value = Wall;
+            var originalValue = original.items[places.Value.Coord.x, places.Value.Coord.y].value;
+            original.items[places.Value.Coord.x, places.Value.Coord.y].value = Wall;
 
-            var foundLoop = Visited(start.Value, original,start.Value.value) == null;
+            var foundLoop = Visited(start, original,start.value) == null;
             if (foundLoop) counter += 1;
-            original.items[(places.Value.Coord.x, places.Value.Coord.y)].value = originalValue;
+            original.items[places.Value.Coord.x, places.Value.Coord.y].value = originalValue;
         }
         return counter;
     }

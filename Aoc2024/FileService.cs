@@ -27,16 +27,22 @@ public class FileService(int day) : IFileService
     public Grid LoadGrid()
     {
         var file = LoadFile();
-        var grid = new Grid(){items = new Dictionary<(int x, int y), GridCoord?>()};
+        var grid = new Grid(){};
         var rows = file.Split(Environment.NewLine);
         grid.maxY = rows.Count();
         for (int i = 0; i < rows.Count(); i++)
         {
             var letters = rows[i].ToArray();
-            if (i == 0) grid.maxX = letters.Length;
+            if (i == 0)
+            {
+                grid.maxX = letters.Length;
+                grid.items = new GridCoord[grid.maxX, grid.maxY];
+            }
             for (int j = 0; j < letters.Count(); j++)
             {
-                grid.items.Add((j,i), new GridCoord(){Coord = (j,i), value = letters[j]});
+                grid.items[j,i] =  new GridCoord(){Coord = (j,i), value = letters[j]};
+                if (letters[j] == '^') grid.Start = grid.items[j, i];
+
             }
         }
         return grid;
