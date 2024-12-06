@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Text.RegularExpressions;
 using Aoc2024.Days._1;
 using Aoc2024.Interfaces;
@@ -55,17 +56,18 @@ public class Day5() : BaseDay(5), IDay
                 }
             }
         }
-
         return true;
     }
 
     public int RunP2()
-    {    
+    {
+        Stopwatch sw = new();
+        sw.Start();
         var lines = FileService.LoadLines();
         var rules = lines.Where(x => x.Contains("|")).ToArray();
         var pagesList = lines.Where(x => !x.Contains("|")).Select(x => x.Split(",").Select(y => int.Parse(y)).ToArray());
         var count = 0;
-        var incorrectSortedPages = pagesList.Where(x => !AlreadyCorrect(x, rules));
+        var incorrectSortedPages = pagesList;//.Where(x => !AlreadyCorrect(x, rules));
         foreach (var page in incorrectSortedPages)
         {
             bool sorted = false;
@@ -78,11 +80,8 @@ public class Day5() : BaseDay(5), IDay
         
             var ceiling = Math.Ceiling((double)page.Length / 2);
             count += page[(int)ceiling-1];
-            Console.WriteLine((String.Join(",",page)));
-            Console.WriteLine("middle: " +page[(int)ceiling-1]);
-        
-        ;
         }
+        Console.WriteLine("Ran in " + sw.Elapsed.Milliseconds + "ms");
         return count;
     }
 }
