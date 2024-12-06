@@ -18,17 +18,17 @@ public class Day6() : BaseDay(6), IDay
     public int RunP1()
     {
         var visited = GridCoords();
-        return visited.DistinctBy(x => (x.Key.x, x.Key.y)).Count();
+        return visited.Count();
     }
 
-    private Dictionary<(int x, int y, char direction), GridCoord> GridCoords()
+    private HashSet<(int x, int y, char direction)> GridCoords()
     {
         var grid = FileService.LoadGrid();
         var start = grid.items.Single(x => x.Value.value == Up);
         return HashSet(grid, start.Value);
     }
 
-    private Dictionary<(int x, int y, char direction), GridCoord> HashSet(Grid grid, GridCoord start)
+    private HashSet<(int x, int y, char direction)> HashSet(Grid grid, GridCoord start)
     {
         
         var visited = Traverse(start, grid, Up);
@@ -52,9 +52,9 @@ public class Day6() : BaseDay(6), IDay
         throw new Exception();
     }
 
-    private Dictionary<(int x, int y, char direction), GridCoord> Traverse(GridCoord? current, Grid grid, char direction)
+    private HashSet<(int x, int y, char direction)> Traverse(GridCoord? current, Grid grid, char direction)
     {
-        var visited = new Dictionary<(int x, int y, char direction), GridCoord>();
+        var visited = new HashSet<(int x, int y, char direction)>();
         var next = current;
         {
             while (current?.value != null)
@@ -65,9 +65,9 @@ public class Day6() : BaseDay(6), IDay
                 {
                     current.Direction = direction;
                     current = next;
-                    if(visited.ContainsKey((current.Coord.x, current.Coord.y,direction)))
+                    if(visited.Contains((current.Coord.x, current.Coord.y,direction)))
                         return null;
-                    visited[(current.Coord.x, current.Coord.y,direction)] = current;
+                    visited.Add((current.Coord.x, current.Coord.y,direction));
                 }
                 else
                     direction = Turn(direction);
@@ -93,15 +93,15 @@ public class Day6() : BaseDay(6), IDay
         var path = GridCoords();
         var counter = 0;
         var start = original.items.Single(x => x.Value.value == Up);
-        foreach (var places in path.DistinctBy(x => (x.Key.x, x.Key.y)))
+        foreach (var places in path)
         {
-            if(places.Value.value == '^') continue;
-            var originalValue = original.items[(places.Value.Coord.x, places.Value.Coord.y)].value;
-            original.items[(places.Value.Coord.x, places.Value.Coord.y)].value = '#';
+            if(places.x == start.Value.Coord.x && places.y == start.Value.Coord.y) continue;
+            var originalValue = original.items[(places.x, places.y)].value;
+            original.items[(places.x, places.y)].value = '#';
 
             var foundLoop = HashSet(original,start.Value) == null;
             if (foundLoop) counter += 1;
-            original.items[(places.Value.Coord.x, places.Value.Coord.y)].value = originalValue;
+            original.items[(places.x, places.y)].value = originalValue;
         }
         return counter;
     }
