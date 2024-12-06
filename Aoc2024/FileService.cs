@@ -29,7 +29,7 @@ public class FileService(int day) : IFileService
         var file = LoadFile();
         var grid = new Grid(){items = new Dictionary<(int x, int y), GridCoord?>()};
         var rows = file.Split(Environment.NewLine);
-        grid.maxY = rows.Count() - 1;
+        grid.maxY = rows.Count();
         for (int i = 0; i < rows.Count(); i++)
         {
             var letters = rows[i].ToArray();

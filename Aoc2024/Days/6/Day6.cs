@@ -75,6 +75,32 @@ public class Day6() : BaseDay(6), IDay
         }
         return visited;
     }
+    
+    
+    private char[,] Visited(GridCoord? current, Grid grid, char direction)
+    {
+        char[,] visited = new char[grid.maxX, grid.maxY];
+        var next = current;
+        {
+            while (current?.value != null)
+            {
+                next = MoveInDirection(grid, direction, current);
+                if (next is null) break;
+                if (next?.value != Wall)
+                {
+                    current.Direction = direction;
+                    current = next;
+                    if(current.Coord.x < grid.maxX && current.Coord.y < grid.maxY && (char)visited[current.Coord.x, current.Coord.y] == direction )
+                        return null;
+                    if(current.Coord.x < grid.maxX && current.Coord.y < grid.maxY )
+                        visited[current.Coord.x, current.Coord.y] = direction;
+                }
+                else
+                    direction = Turn(direction);
+            }
+        }
+        return visited;
+    }
 
     private char Turn(char currentDirection)
     {
@@ -95,11 +121,11 @@ public class Day6() : BaseDay(6), IDay
         var start = original.items.Single(x => x.Value.value == Up);
         foreach (var places in path.DistinctBy(x => (x.Key.x, x.Key.y)))
         {
-            if(places.Value.value == '^') continue;
+            if(places.Value.value == Up) continue;
             var originalValue = original.items[(places.Value.Coord.x, places.Value.Coord.y)].value;
-            original.items[(places.Value.Coord.x, places.Value.Coord.y)].value = '#';
+            original.items[(places.Value.Coord.x, places.Value.Coord.y)].value = Wall;
 
-            var foundLoop = HashSet(original,start.Value) == null;
+            var foundLoop = Visited(start.Value, original,start.Value.value) == null;
             if (foundLoop) counter += 1;
             original.items[(places.Value.Coord.x, places.Value.Coord.y)].value = originalValue;
         }
