@@ -37,13 +37,14 @@ public class FileService(int day) : IFileService
                 grid.items.Add((j,i), new GridCoord(){Coord = (j,i), value = letters[j]});
             }
         }
-
         return grid;
     }
+    
 }
 
 public class GridCoord
 {
     public (int x, int y) Coord;
     public char value;
+    public char Direction;
 }

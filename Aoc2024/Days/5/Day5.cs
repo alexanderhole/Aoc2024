@@ -81,7 +81,6 @@ public class Day5() : BaseDay(5), IDay
             var ceiling = Math.Ceiling((double)page.Length / 2);
             count += page[(int)ceiling-1];
         }
-        Console.WriteLine("Ran in " + sw.Elapsed.Milliseconds + "ms");
         return count;
     }
 }

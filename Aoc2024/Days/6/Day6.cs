@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using System.Linq.Expressions;
+using System.Security.Cryptography.X509Certificates;
 using System.Text.RegularExpressions;
 using Aoc2024.Days._1;
 using Aoc2024.Interfaces;
@@ -16,10 +17,21 @@ public class Day6() : BaseDay(6), IDay
 
     public int RunP1()
     {
+        var visited = GridCoords();
+        return visited.DistinctBy(x => (x.Key.x, x.Key.y)).Count();
+    }
+
+    private Dictionary<(int x, int y, char direction), GridCoord> GridCoords()
+    {
         var grid = FileService.LoadGrid();
+        return HashSet(grid);
+    }
+
+    private Dictionary<(int x, int y, char direction), GridCoord> HashSet(Grid grid)
+    {
         var start = grid.items.Single(x => x.Value.value == Up);
         var visited = Traverse(start.Value, grid, Up);
-        return visited.Distinct().Count();
+        return visited;
     }
 
     private GridCoord? MoveInDirection(Grid grid, char direction, GridCoord current)
@@ -39,19 +51,22 @@ public class Day6() : BaseDay(6), IDay
         throw new Exception();
     }
 
-    private List<GridCoord> Traverse(GridCoord? current, Grid grid, char direction)
+    private Dictionary<(int x, int y, char direction), GridCoord> Traverse(GridCoord? current, Grid grid, char direction)
     {
-        var visited = new List<GridCoord>();
+        var visited = new Dictionary<(int x, int y, char direction), GridCoord>();
         var next = current;
         {
             while (current?.value != null)
             {
                 next = MoveInDirection(grid, direction, current);
-
+                if (next is null) break;
                 if (next?.value != Wall)
                 {
+                    current.Direction = direction;
                     current = next;
-                    visited.Add(current);
+                    if(visited.ContainsKey((current.Coord.x, current.Coord.y,direction)))
+                        return null;
+                    visited[(current.Coord.x, current.Coord.y,direction)] = current;
                 }
                 else
                     direction = Turn(direction);
@@ -73,6 +88,18 @@ public class Day6() : BaseDay(6), IDay
     }
     public int RunP2()
     {
-        return 0;
+        var original  = FileService.LoadGrid();
+        var path = GridCoords();
+        var counter = 0;
+        foreach (var places in path.DistinctBy(x => (x.Key.x, x.Key.y)))
+        {
+            if(places.Value.value == '^') continue;
+            var testGrid = new Grid() { items = original.items.ToDictionary(kvp => kvp.Key, kvp => kvp.Value) };
+            testGrid.items[(places.Value.Coord.x, places.Value.Coord.y)] = new GridCoord()
+                { Coord = (places.Value.Coord.x, places.Value.Coord.y), value = '#' };
+            var foundLoop = HashSet(testGrid) == null;
+            if (foundLoop) counter += 1;
+        }
+        return counter;
     }
 }
