@@ -94,11 +94,12 @@ public class Day6() : BaseDay(6), IDay
         foreach (var places in path.DistinctBy(x => (x.Key.x, x.Key.y)))
         {
             if(places.Value.value == '^') continue;
-            var testGrid = new Grid() { items = original.items.ToDictionary(kvp => kvp.Key, kvp => kvp.Value) };
-            testGrid.items[(places.Value.Coord.x, places.Value.Coord.y)] = new GridCoord()
-                { Coord = (places.Value.Coord.x, places.Value.Coord.y), value = '#' };
-            var foundLoop = HashSet(testGrid) == null;
+            var originalValue = original.items[(places.Value.Coord.x, places.Value.Coord.y)].value;
+            original.items[(places.Value.Coord.x, places.Value.Coord.y)].value = '#';
+
+            var foundLoop = HashSet(original) == null;
             if (foundLoop) counter += 1;
+            original.items[(places.Value.Coord.x, places.Value.Coord.y)].value = originalValue;
         }
         return counter;
     }
