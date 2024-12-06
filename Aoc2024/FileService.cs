@@ -29,9 +29,11 @@ public class FileService(int day) : IFileService
         var file = LoadFile();
         var grid = new Grid(){items = new Dictionary<(int x, int y), GridCoord?>()};
         var rows = file.Split(Environment.NewLine);
+        grid.maxY = rows.Count() - 1;
         for (int i = 0; i < rows.Count(); i++)
         {
             var letters = rows[i].ToArray();
+            if (i == 0) grid.maxX = letters.Length;
             for (int j = 0; j < letters.Count(); j++)
             {
                 grid.items.Add((j,i), new GridCoord(){Coord = (j,i), value = letters[j]});

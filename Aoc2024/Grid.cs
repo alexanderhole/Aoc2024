@@ -4,7 +4,8 @@ public class Grid
 {
     //public List<GridCoord?> items;
     public Dictionary<(int x, int y), GridCoord?> items;
-
+    public int maxX;
+    public int maxY;
     public GridCoord? GetLeft(GridCoord coord)
     {
         return safeGetItem((coord.Coord.x - 1, coord.Coord.y));
@@ -22,9 +23,11 @@ public class Grid
 
     private GridCoord? safeGetItem((int x, int y) valueTuple)
     {
-        if(!items.ContainsKey((valueTuple.x, valueTuple.y)))
-            return null;
-        return items[(valueTuple.x, valueTuple.y)];
+        if(valueTuple.x < maxX && valueTuple.x >= 0 && valueTuple.y < maxY && valueTuple.y >= 0)
+        //if(!items.ContainsKey((valueTuple.x, valueTuple.y)))
+          //  return null;
+            return items[(valueTuple.x, valueTuple.y)];
+        return null;
     }
 
     public GridCoord? GetDown(GridCoord coord)

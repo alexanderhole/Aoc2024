@@ -24,13 +24,14 @@ public class Day6() : BaseDay(6), IDay
     private Dictionary<(int x, int y, char direction), GridCoord> GridCoords()
     {
         var grid = FileService.LoadGrid();
-        return HashSet(grid);
+        var start = grid.items.Single(x => x.Value.value == Up);
+        return HashSet(grid, start.Value);
     }
 
-    private Dictionary<(int x, int y, char direction), GridCoord> HashSet(Grid grid)
+    private Dictionary<(int x, int y, char direction), GridCoord> HashSet(Grid grid, GridCoord start)
     {
-        var start = grid.items.Single(x => x.Value.value == Up);
-        var visited = Traverse(start.Value, grid, Up);
+        
+        var visited = Traverse(start, grid, Up);
         return visited;
     }
 
@@ -91,13 +92,14 @@ public class Day6() : BaseDay(6), IDay
         var original  = FileService.LoadGrid();
         var path = GridCoords();
         var counter = 0;
+        var start = original.items.Single(x => x.Value.value == Up);
         foreach (var places in path.DistinctBy(x => (x.Key.x, x.Key.y)))
         {
             if(places.Value.value == '^') continue;
             var originalValue = original.items[(places.Value.Coord.x, places.Value.Coord.y)].value;
             original.items[(places.Value.Coord.x, places.Value.Coord.y)].value = '#';
 
-            var foundLoop = HashSet(original) == null;
+            var foundLoop = HashSet(original,start.Value) == null;
             if (foundLoop) counter += 1;
             original.items[(places.Value.Coord.x, places.Value.Coord.y)].value = originalValue;
         }
