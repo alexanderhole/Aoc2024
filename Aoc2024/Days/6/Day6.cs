@@ -17,8 +17,8 @@ public class Day6() : BaseDay(6), IDay
     public int RunP1()
     {
         var grid = FileService.LoadGrid();
-        var start = grid.items.Single(x => x.value == Up);
-        var visited = Traverse(start, grid, Up);
+        var start = grid.items.Single(x => x.Value.value == Up);
+        var visited = Traverse(start.Value, grid, Up);
         return visited.Distinct().Count();
     }
 

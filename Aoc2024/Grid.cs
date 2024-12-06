@@ -2,38 +2,53 @@ namespace Aoc2024;
 
 public class Grid
 {
-    public List<GridCoord?> items;
+    //public List<GridCoord?> items;
+    public Dictionary<(int x, int y), GridCoord?> items;
 
     public GridCoord? GetLeft(GridCoord coord)
     {
-        return items.SingleOrDefault(x => x.Coord.x == coord.Coord.x - 1 && x.Coord.y == coord.Coord.y);
+        return safeGetItem((coord.Coord.x - 1, coord.Coord.y));
     }
+
     public GridCoord? GetRight(GridCoord coord)
     {
-        return items.SingleOrDefault(x => x.Coord.x == coord.Coord.x + 1 && x.Coord.y == coord.Coord.y);
+        return safeGetItem((coord.Coord.x + 1, coord.Coord.y));
     }
+
     public GridCoord? GetUp(GridCoord coord)
     {
-        return items.SingleOrDefault(x => x.Coord.x == coord.Coord.x && x.Coord.y == coord.Coord.y - 1);
+        return safeGetItem((coord.Coord.x, coord.Coord.y - 1));
     }
+
+    private GridCoord? safeGetItem((int x, int y) valueTuple)
+    {
+        if(!items.ContainsKey((valueTuple.x, valueTuple.y)))
+            return null;
+        return items[(valueTuple.x, valueTuple.y)];
+    }
+
     public GridCoord? GetDown(GridCoord coord)
     {
-        return items.SingleOrDefault(x => x.Coord.x == coord.Coord.x && x.Coord.y == coord.Coord.y + 1);
+        return safeGetItem((coord.Coord.x, coord.Coord.y + 1));
     }
+
     public GridCoord? GetUpLeft(GridCoord coord)
     {
-        return items.SingleOrDefault(x => x.Coord.x == coord.Coord.x - 1 && x.Coord.y == coord.Coord.y - 1);
+        return safeGetItem((coord.Coord.x - 1, coord.Coord.y - 1));
     }
+
     public GridCoord? GetUpRight(GridCoord coord)
     {
-        return items.SingleOrDefault(x => x.Coord.x == coord.Coord.x + 1 && x.Coord.y == coord.Coord.y - 1);
+        return safeGetItem((coord.Coord.x + 1, coord.Coord.y - 1));
     }
+
     public GridCoord? GetDownRight(GridCoord coord)
     {
-        return items.SingleOrDefault(x => x.Coord.x == coord.Coord.x + 1 && x.Coord.y == coord.Coord.y + 1);
+        return safeGetItem((coord.Coord.x + 1, coord.Coord.y + 1));
     }
+
     public GridCoord? GetDownLeft(GridCoord coord)
     {
-        return items.SingleOrDefault(x => x.Coord.x == coord.Coord.x -1 && x.Coord.y == coord.Coord.y + 1);
+        return safeGetItem((coord.Coord.x - 1, coord.Coord.y + 1));
     }
 }
