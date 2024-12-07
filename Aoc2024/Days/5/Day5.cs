@@ -8,7 +8,7 @@ namespace Aoc2024.Days._2;
 
 public class Day5() : BaseDay(5), IDay
 {
-    public int RunP1()
+    public dynamic RunP1()
     {
         var lines = FileService.LoadLines();
         var rules = lines.Where(x => x.Contains("|")).ToArray();

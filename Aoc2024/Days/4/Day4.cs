@@ -6,7 +6,7 @@ namespace Aoc2024.Days._2;
 
 public class Day4() : BaseDay(4), IDay
 {
-    public int RunP1()
+    public dynamic RunP1()
     {
         var counter = 0;
         var grid = FileService.LoadGrid();

@@ -5,7 +5,7 @@ namespace Aoc2024.Days._2;
 
 public class Day2() : BaseDay(2), IDay
 {
-    public int RunP1()
+    public dynamic RunP1()
     {
         return FileService.LoadIntLines().Count(row => checkSafe(row.ToArray()));
     }

@@ -6,7 +6,7 @@ namespace Aoc2024.Days._2;
 
 public class Day3() : BaseDay(3), IDay
 {
-    public int RunP1()
+    public dynamic RunP1()
     {
         Console.WriteLine();
         var fileString = FileService.LoadFile();

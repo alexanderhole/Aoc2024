@@ -15,7 +15,7 @@ public class Day6() : BaseDay(6), IDay
     private const char Left = '<';
     private const char Wall = '#';
 
-    public int RunP1()
+    public dynamic RunP1()
     {
         var visited = GridCoords();
         return visited.DistinctBy(x => (x.Key.x, x.Key.y)).Count();

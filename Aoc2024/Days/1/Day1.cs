@@ -9,7 +9,7 @@ public class Day1() : BaseDay(1), IDay
         (var leftList, var right) = GetSortedLists();
         return leftList.Sum(left => (left * right.Count(x => x == left)));
     }
-    public int RunP1()
+    public dynamic RunP1()
     {
         var (left, right) = GetSortedLists();
         var distance = 0;
