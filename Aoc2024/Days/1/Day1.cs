@@ -4,7 +4,7 @@ namespace Aoc2024.Days._1;
 
 public class Day1() : BaseDay(1), IDay
 {
-    public int RunP2()
+    public dynamic RunP2()
     {
         (var leftList, var right) = GetSortedLists();
         return leftList.Sum(left => (left * right.Count(x => x == left)));

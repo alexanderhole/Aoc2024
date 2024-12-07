@@ -36,7 +36,7 @@ public class Day2() : BaseDay(2), IDay
     }
     
 
-    public int RunP2()
+    public dynamic RunP2()
     {
         var safeReports = 0;
         foreach (var row in FileService.LoadIntLines())

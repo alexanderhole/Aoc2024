@@ -25,7 +25,7 @@ public class Day3() : BaseDay(3), IDay
         return result;
     }
 
-    public int RunP2()
+    public dynamic RunP2()
     {
         var fileString = FileService.LoadFile();
         var index = 0;

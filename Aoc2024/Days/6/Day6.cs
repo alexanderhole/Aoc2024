@@ -110,7 +110,7 @@ public class Day6() : BaseDay(6), IDay
             _ => Up
         };
     }
-    public int RunP2()
+    public dynamic RunP2()
     {
         var original  = FileService.LoadGrid();
         var path = GridCoords();

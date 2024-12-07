@@ -56,3 +56,22 @@ public class GridCoord
     public char value;
     public char Direction;
 }
+
+public class StolenCode
+{
+    public static string ToBase(int input)
+    {
+        int dividend = input+1;
+        string output = String.Empty;
+        int modulo;
+
+        while (dividend > 0)
+        {
+            modulo = (dividend - 1) % 3;
+            output = Convert.ToChar('A' + modulo).ToString() + output;
+            dividend = (int)((dividend - modulo) / 3);
+        } 
+
+        return output;
+    }
+}

@@ -40,7 +40,7 @@ public class Day4() : BaseDay(4), IDay
         return true;
     }
 
-    public int RunP2()
+    public dynamic RunP2()
     {
         var counter = 0;
         var grid = FileService.LoadGrid();

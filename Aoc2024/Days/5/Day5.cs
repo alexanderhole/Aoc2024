@@ -59,7 +59,7 @@ public class Day5() : BaseDay(5), IDay
         return true;
     }
 
-    public int RunP2()
+    public dynamic RunP2()
     {
         Stopwatch sw = new();
         sw.Start();
