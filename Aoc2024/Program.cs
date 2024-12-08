@@ -7,7 +7,7 @@ using Aoc2024.Days._2;
 using Aoc2024.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 Environment.SetEnvironmentVariable("test", "false");
-const int currentDay = 7;
+const int currentDay = 8;
 
 
 var serviceProvider = new ServiceCollection()
@@ -18,11 +18,10 @@ var serviceProvider = new ServiceCollection()
     .AddKeyedSingleton<IDay, Day5>(5)
     .AddKeyedSingleton<IDay, Day6>(6)
     .AddKeyedSingleton<IDay, Day7>(7)
-
-
+    .AddKeyedSingleton<IDay, Day8>(8)
 
     .BuildServiceProvider();
-for (int i = 7; i <= currentDay; i++)
+for (int i = currentDay; i <= currentDay; i++)
 {
     Stopwatch sw = new Stopwatch();
     sw.Start();
