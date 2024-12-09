@@ -6,7 +6,7 @@ using Aoc2024.Days._1;
 using Aoc2024.Days._2;
 using Aoc2024.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
-Environment.SetEnvironmentVariable("test", "false");
+Environment.SetEnvironmentVariable("test", "true");
 const int currentDay = 9;
 
 
