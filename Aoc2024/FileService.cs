@@ -40,7 +40,7 @@ public class FileService(int day) : IFileService
             }
             for (int j = 0; j < letters.Count(); j++)
             {
-                grid.items[j,i] =  new GridCoord(){Coord = (j,i), value = letters[j]};
+                grid.items[i,j] =  new GridCoord(){Coord = (i,j), value = letters[j]};
                 if (letters[j] == '^') grid.Start = grid.items[j, i];
 
             }
@@ -50,12 +50,6 @@ public class FileService(int day) : IFileService
     
 }
 
-public class GridCoord
-{
-    public (int x, int y) Coord;
-    public char value;
-    public char Direction;
-}
 
 public class StolenCode
 {

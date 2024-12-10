@@ -55,4 +55,23 @@ public class Grid
     {
         return safeGetItem(coord.Coord.x - 1, coord.Coord.y + 1);
     }
+
+    public List<GridCoord> FindNeighours(GridCoord item, char current)
+    {
+        var neighbours = new List<GridCoord>();
+        var neighbour = GetUp(item);
+        if(neighbour?.value == current) 
+            neighbours.Add(neighbour);
+        neighbour = GetDown(item);
+        if(neighbour?.value == current) 
+            neighbours.Add(neighbour);
+        neighbour = GetRight(item);
+        if(neighbour?.value == current) 
+            neighbours.Add(neighbour);
+        neighbour = GetLeft(item);
+        if(neighbour?.value == current) 
+            neighbours.Add(neighbour);
+        return neighbours;
+
+    }
 }

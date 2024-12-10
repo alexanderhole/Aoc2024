@@ -67,7 +67,7 @@ public class Day9() : BaseDay(9), IDay
         {
             FileThingy a = new FileThingy()
             {
-                Contents= string.Join("", Enumerable.Repeat(id.ToString(), int.Parse(file[0].ToString())))
+                Contents= Enumerable.Repeat(id, int.Parse(file[0].ToString())).ToList()
                 
             };
             if (file.Count() == 2)
@@ -91,12 +91,12 @@ public class Day9() : BaseDay(9), IDay
                 var fileThingy = original[i];
 
                 var indexOfFileThingy = numbers.IndexOf(fileThingy);
-                var slot = numbers.FirstOrDefault(x => x.FreeLength >= fileThingy.Contents.Length && indexOfFileThingy >= numbers.IndexOf(x));
+                var slot = numbers.FirstOrDefault(x => x.FreeLength >= fileThingy.Contents.Count() && indexOfFileThingy >= numbers.IndexOf(x));
 
                 if (slot != fileThingy && slot != null)
                 {
-                    numbers[indexOfFileThingy - 1].FreeLength += fileThingy.Contents.Length + fileThingy.FreeLength;
-                    fileThingy.FreeLength = slot.FreeLength - fileThingy.Contents.Length;
+                    numbers[indexOfFileThingy - 1].FreeLength += fileThingy.Contents.Count() + fileThingy.FreeLength;
+                    fileThingy.FreeLength = slot.FreeLength - fileThingy.Contents.Count();
                     slot.FreeLength = 0;
                     numbers.Remove(fileThingy);
                     
@@ -105,25 +105,32 @@ public class Day9() : BaseDay(9), IDay
             }
         }
         long checksum = 0;
+        var count = 0;
         var s = "";
         foreach (var number in numbers)
         {
-            s += number.Contents;
-            s += string.Join("",Enumerable.Repeat(0, number.FreeLength));
+            number.Contents.AddRange(Enumerable.Repeat(0, number.FreeLength));
+            //s += string.Join("",Enumerable.Repeat(0, number.FreeLength));
+            foreach (var num in number.Contents)
+            {
+                checksum += num * count;
+                count += 1;
+            }
+
         }
-        Console.WriteLine(s);
-        for (int i = 0; i < s.ToArray().Count(); i++)
-        {
-            if(s[i] != '.')
-                checksum += i * Int64.Parse(s[i].ToString());
-        }
+        // Console.WriteLine(s);
+        // for (int i = 0; i < s.ToArray().Count(); i++)
+        // {
+        //     if(s[i] != '.')
+        //         checksum += i * Int64.Parse(s[i].ToString());
+        // }
         return checksum;
         return 0;
     }
 
     public class FileThingy
     {
-        public string Contents { get; set; }
+        public List<int> Contents { get; set; }
         public int Length { get; set; }
         public bool Moved { get; set; }
         public int UsedLength { get; set; }
