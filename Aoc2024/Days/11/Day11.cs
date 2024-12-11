@@ -6,7 +6,7 @@ namespace Aoc2024.Days._2;
 
 public class Day11() : BaseDay(11), IDay
 {
-    private LeastRecentlyUsedCache<(long stone, int depth), long> blinkCache;
+    private Dictionary<(long stone, int depth), long> blinkCache;
 
     public dynamic RunP1()
     {
@@ -20,7 +20,7 @@ public class Day11() : BaseDay(11), IDay
     private dynamic RunBlinks(int blinks)
     {
         var stones = FileService.LoadFile().Split(" ").Select(long.Parse);
-        blinkCache = new LeastRecentlyUsedCache<(long stone, int depth), long>(350000);
+        blinkCache = new Dictionary<(long stone, int depth), long>();
         return stones.Sum(x => GetChildrenCount(blinks, x));
     }
     
