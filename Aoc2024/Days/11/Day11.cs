@@ -49,15 +49,17 @@ public class Day11() : BaseDay(11), IDay
             return 1;
         blinks -= 1;
         long counter = 0;
-        var rules = ApplyRules(stone);
+
         if (blinkCache.TryGetValue((stone, blinks), out var cachedCount))
             counter += cachedCount;
         else
         {
+            var rules = ApplyRules(stone);
             counter += GetChildrenCount(blinks, rules.Item1);
+            counter += rules.Item2 != null ? GetChildrenCount(blinks, rules.Item2.Value) : 0;
             blinkCache[(stone, blinks)] = counter;
         }
-        counter += rules.Item2 != null ? GetChildrenCount(blinks, rules.Item2.Value) : 0;
+
         return counter;
     }
 
