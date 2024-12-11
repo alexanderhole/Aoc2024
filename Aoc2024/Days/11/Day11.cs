@@ -18,57 +18,37 @@ public class Day11() : BaseDay(11), IDay
 
     public dynamic RunP1()
     {
-        var stones = FileService.LoadFile().Split(" ").Select(long.Parse);
-        int blinks = 25;
-        for (int i = 0; i < blinks; i++)
-        {
-            var tempOrder = new List<long>();
-            foreach (var stone in stones)
-            {
-                var applyRules = ApplyRules(stone);
-                tempOrder.Add(applyRules.Item1);
-                if (applyRules.Item2 != null)
-                    tempOrder.Add(applyRules.Item2.Value);
-            }
-
-            stones = tempOrder;
-        }
-
-        return stones.Count();
+        return RunBlinks(25);
+    }
+    public dynamic RunP2()
+    {
+        return RunBlinks(75);
     }
 
+    private dynamic RunBlinks(int blinks)
+    {
+        var stones = FileService.LoadFile().Split(" ").Select(long.Parse);
+        blinkCache = new LeastRecentlyUsedCache<(long stone, int depth), long>(350000);
+        return stones.Sum(x => GetChildrenCount(blinks, x));
+    }
+    
     private (long, long?) ApplyRules(long stone)
     {
         if (stone == 0)
             return (1, null);
-        else
-        {
-            var digitsLog10 = Digits_Log10(stone);
-            if (digitsLog10 % 2 == 0)
-            {
-                var pow = Math.Pow(10, digitsLog10 / 2);
-                var d = stone / pow;
-                var one = Math.Floor(d);
-                var two = Math.Round(d % 1 * pow);
-                return ((long)one, (long)two);
-            }
-            else
-                return (stone * 2024, null);
-        }
+        var lengthOfDigits = GetNumberOfDigitsInNumber(stone);
+        if (lengthOfDigits % 2 != 0) return (stone * 2024, null);
+        var (firstHalf, secondHalf) = One(stone, lengthOfDigits);
+        return ((long)firstHalf, (long)secondHalf);
     }
 
-    public dynamic RunP2()
+    private static (double firstHalf, double secondHalf) One(long stone, int lengthOfDigits)
     {
-        var stones = FileService.LoadFile().Split(" ").Select(long.Parse);
-        int blinks = 75;
-        long final = 0;
-        blinkCache = new LeastRecentlyUsedCache<(long stone, int depth), long>(500000000);
-        foreach (var stone in stones)
-        {
-            final += GetChildrenCount(blinks, stone);
-        }
-
-        return final;
+        var pow = Math.Pow(10, lengthOfDigits / 2);
+        var d = stone / pow;
+        var one = Math.Floor(d);
+        var two = Math.Round(d % 1 * pow);
+        return (one, two);
     }
 
     private long GetChildrenCount(int blinks, long stone)
@@ -78,24 +58,17 @@ public class Day11() : BaseDay(11), IDay
         blinks -= 1;
         long counter = 0;
         var rules = ApplyRules(stone);
-        long childrenCount = 0;
-        if (blinkCache.ContainsKey((stone, blinks)))
-            childrenCount = blinkCache[(stone, blinks)];
+        if (blinkCache.TryGetValue((stone, blinks), out var cachedCount))
+            counter += cachedCount;
         else
         {
-            childrenCount = GetChildrenCount(blinks, rules.Item1);
-            blinkCache[(stone, blinks)] = childrenCount;
+            counter += GetChildrenCount(blinks, rules.Item1);
+            blinkCache[(stone, blinks)] = counter;
         }
-
-        counter += childrenCount;
-        if (rules.Item2 != null)
-        {
-            counter += rules.Item2 != null ? GetChildrenCount(blinks, rules.Item2.Value) : 0;
-        }
-
+        counter += rules.Item2 != null ? GetChildrenCount(blinks, rules.Item2.Value) : 0;
         return counter;
     }
 
-    public static int Digits_Log10(long n) =>
+    public static int GetNumberOfDigitsInNumber(long n) =>
         n == 0L ? 1 : (n > 0L ? 1 : 2) + (int)Math.Log10(Math.Abs((double)n));
 }
