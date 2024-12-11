@@ -77,6 +77,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <PackageReference Include="LRU" Version="1.0.3" />
       <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.0" />
       <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.0" />
       <PackageReference Include="SG.Utilities.BaseConverter" Version="1.1.0" />
