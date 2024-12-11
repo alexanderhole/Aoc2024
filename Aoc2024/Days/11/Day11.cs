@@ -1,14 +1,6 @@
-using System.Diagnostics;
-using System.Globalization;
-using System.Linq.Expressions;
-using System.Reflection.Emit;
-using System.Security.Cryptography.X509Certificates;
-using System.Text.RegularExpressions;
 using Aoc2024.Days._1;
 using Aoc2024.Interfaces;
 using LRU;
-using Microsoft.VisualBasic.CompilerServices;
-using SG.Utilities;
 
 namespace Aoc2024.Days._2;
 
@@ -70,5 +62,5 @@ public class Day11() : BaseDay(11), IDay
     }
 
     public static int GetNumberOfDigitsInNumber(long n) =>
-        n == 0L ? 1 : (n > 0L ? 1 : 2) + (int)Math.Log10(Math.Abs((double)n));
+        1 + (int)Math.Log10(n);
 }
