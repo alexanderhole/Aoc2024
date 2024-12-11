@@ -40,11 +40,14 @@ public class Day11() : BaseDay(11), IDay
             return (1,null);
         else
         {
-            var s = stone.ToString();
-            if (s.Length % 2 == 0)
+            var digitsLog10 = Digits_Log10(stone);
+            if (digitsLog10 % 2 == 0)
             {
-                var mid = s.Length / 2;
-                return (long.Parse(s.Substring(0,mid)),long.Parse(s.Substring(mid)));
+                var pow = Math.Pow(10, digitsLog10/2);
+                var d = stone / pow;
+                var one = Math.Floor(d);
+                var two = Math.Round(d % 1 * pow);
+                return ((long)one, (long)two);
             }
             else 
                 return (stone * 2024,null);
@@ -54,24 +57,39 @@ public class Day11() : BaseDay(11), IDay
     public dynamic RunP2()
   {
       var stones = FileService.LoadFile().Split(" ").Select(long.Parse);
-      int blinks = 75;
+      int blinks = 40;
       Stopwatch sw = new Stopwatch();
       sw.Start();
-      for (int i = 0; i < blinks; i++)
+      sw.Restart();
+      var stonecounter = 0;
+      var final = new List<long>();
+      foreach (var stone in stones)
       {
-          sw.Restart();
-          var tempOrder = new List<long>();
-          foreach (var stone in stones)
+          stonecounter += 1;
+          var tempOrder = new List<long>(){stone};
+
+          for (int i = 0; i < blinks; i++)
           {
-              var applyRules = ApplyRules(stone);
-              tempOrder.Add(applyRules.Item1.Value);
-              if(applyRules.Item2 != null)
-                  tempOrder.Add(applyRules.Item2.Value);
+              var ruleOrder = new List<long>();
+              foreach (var temp in tempOrder)
+              {
+                  var applyRules = ApplyRules(temp);
+                  ruleOrder.Add(applyRules.Item1.Value);
+                  if (applyRules.Item2 != null)
+                      ruleOrder.Add(applyRules.Item2.Value);
+              }
+              Console.WriteLine(stonecounter + " stone time " + i +" blink "   + sw.ElapsedMilliseconds + "ms" + " with " + tempOrder.Count() +" items");
+
+              tempOrder = ruleOrder;
           }
 
-          stones = tempOrder;
-          Console.WriteLine(i + " blink time " + sw.ElapsedMilliseconds + "ms" + " with " + stones.Count() +" items");
+          //stones = tempOrder;
+          Console.WriteLine(stonecounter + " stone time " + sw.ElapsedMilliseconds + "ms" + " with " + stones.Count() +" items");
+          final.AddRange(tempOrder);
       }
-      return stones.Count();
+      return final.Count();
   }
+    public static int Digits_Log10(long n) =>
+        n == 0L ? 1 : (n > 0L ? 1 : 2) + (int)Math.Log10(Math.Abs((double)n));
+
 }
