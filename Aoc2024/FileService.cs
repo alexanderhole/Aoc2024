@@ -30,18 +30,18 @@ public class FileService(int day) : IFileService
         var grid = new Grid(){};
         var rows = file.Split(Environment.NewLine);
         grid.maxY = rows.Count();
-        for (int i = 0; i < rows.Count(); i++)
+        for (int y = 0; y < grid.maxY; y++)
         {
-            var letters = rows[i].ToArray();
-            if (i == 0)
+            var letters = rows[y].ToArray();
+            if (y == 0)
             {
                 grid.maxX = letters.Length;
                 grid.items = new GridCoord[grid.maxX, grid.maxY];
             }
-            for (int j = 0; j < letters.Count(); j++)
+            for (int x = 0; x < letters.Count(); x++)
             {
-                grid.items[i,j] =  new GridCoord(){Coord = (i,j), value = letters[j]};
-                if (letters[j] == '^') grid.Start = grid.items[j, i];
+                grid.items[x,y] =  new GridCoord(){Coord = (x,y), value = letters[x]};
+                if (letters[x] == '^') grid.Start = grid.items[x, y];
 
             }
         }
