@@ -7,7 +7,7 @@ using Aoc2024.Days._2;
 using Aoc2024.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 Environment.SetEnvironmentVariable("test", "false");
-const int currentDay = 11;
+const int currentDay = 12;
 
 
 var serviceProvider = new ServiceCollection()
@@ -22,6 +22,7 @@ var serviceProvider = new ServiceCollection()
     .AddKeyedSingleton<IDay, Day9>(9)
     .AddKeyedSingleton<IDay, Day10>(10)
     .AddKeyedSingleton<IDay, Day11>(11)
+    .AddKeyedSingleton<IDay, Day12>(12)
 
 
     .BuildServiceProvider();
