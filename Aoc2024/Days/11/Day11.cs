@@ -1,19 +1,14 @@
-using System.Reflection.Metadata.Ecma335;
-using Aoc2024.Days._1;
-using Aoc2024.Interfaces;
-using LRU;
-
 namespace Aoc2024.Days._2;
 
 public class Day11() : BaseDay(11), IDay
 {
-    private CacheProvider<long> countcached = new();
-    private CacheProvider<(long, long?)> applycached = new();
+    private readonly CacheProvider<long> _countCached = new();
 
     public dynamic RunP1()
     {
         return RunBlinks(25);
     }
+
     public dynamic RunP2()
     {
         return RunBlinks(75);
@@ -22,10 +17,10 @@ public class Day11() : BaseDay(11), IDay
     private dynamic RunBlinks(int blinks)
     {
         var stones = FileService.LoadFile().Split(" ").Select(long.Parse);
-        return stones.Sum(x => GetChildrenCount(blinks,x));
+        return stones.Sum(x => GetChildrenCount(blinks, x));
     }
 
-    private (long, long?) ApplyRules(long stone)
+    private static (long, long?) ApplyRules(long stone)
     {
         if (stone == 0)
             return (1, null);
@@ -53,24 +48,29 @@ public class Day11() : BaseDay(11), IDay
         //var rules = applycached.Cache(() => ApplyRules(stone), stone);
 
         var rules = ApplyRules(stone);
-        counter += countcached.Cache(() => GetChildrenCount(blinks,rules.Item1), (blinks,rules.Item1));
-        counter += rules.Item2.HasValue ? countcached.Cache(() => GetChildrenCount(blinks,rules.Item2.Value), (blinks,rules.Item2.Value)) : 0;
+        counter += _countCached.Cache(() => GetChildrenCount(blinks, rules.Item1), (blinks, rules.Item1));
+        counter += rules.Item2.HasValue
+            ? _countCached.Cache(() => GetChildrenCount(blinks, rules.Item2.Value), (blinks, rules.Item2.Value))
+            : 0;
         return counter;
     }
 
-    public static int GetNumberOfDigitsInNumber(long n) =>
-        1 + (int)Math.Log10(n);
+    public static int GetNumberOfDigitsInNumber(long n)
+    {
+        return 1 + (int)Math.Log10(n);
+    }
 }
 
 public class CacheProvider<T>
 {
-    private Dictionary<object, T> cache = new Dictionary<object, T>();
+    private readonly Dictionary<object, T> _cache = new();
+
     public T Cache(Func<T> function, object key)
     {
-        if (cache.TryGetValue(key, out var output))
+        if (_cache.TryGetValue(key, out var output))
             return output;
         var newOutput = function();
-        cache[key] = newOutput;
+        _cache[key] = newOutput;
         return newOutput;
     }
 }

@@ -1,32 +1,47 @@
-using Aoc2024.Days._1;
-using Aoc2024.Interfaces;
-
-namespace Aoc2024.Days._2;
+namespace Aoc2024.Days._12;
 
 public class Day12() : BaseDay(12), IDay
 {
-
     public dynamic RunP1()
     {
         var grid = FileService.LoadGrid();
-        var items = grid.items;
+        var items = grid.Items;
         var processed = new HashSet<GridCoord>();
         var fenceCount = 0;
-        for (var x = 0; x < grid.maxX; x++)
+        for (var x = 0; x < grid.MaxX; x++)
+        for (var y = 0; y < grid.MaxY; y++)
         {
-            for (var y = 0; y < grid.maxY; y++)
-            {
-                if(processed.Contains(items[x, y])) continue;
-                var returnSet = new HashSet<GridCoord>();
-                var block = GetBlock(items[x, y], grid, returnSet);
-                fenceCount += block.Sum(x => x.FenceCount) * block.Count();
-                processed.UnionWith(block);
-            }
+            if (processed.Contains(items[x, y])) continue;
+            var returnSet = new HashSet<GridCoord>();
+            var block = GetBlock(items[x, y], grid, returnSet);
+            fenceCount += block.Sum(x => x.FenceCount) * block.Count;
+            processed.UnionWith(block);
         }
+
         return fenceCount;
     }
 
-    private int FindBigFencePieces(HashSet<GridCoord> block, Grid grid)
+    public dynamic RunP2()
+    {
+        var grid = FileService.LoadGrid();
+        var items = grid.Items;
+        var processed = new HashSet<GridCoord>();
+        var fenceCount = 0;
+        for (var x = 0; x < grid.MaxX; x++)
+        for (var y = 0; y < grid.MaxY; y++)
+        {
+            if (processed.Contains(items[x, y])) continue;
+            var returnSet = new HashSet<GridCoord>();
+            var block = GetBlock(items[x, y], grid, returnSet);
+            var bigFence = FindBigFencePieces(block);
+            fenceCount += bigFence * block.Count;
+            processed.UnionWith(block);
+        }
+
+        return fenceCount;
+    }
+
+    private static int FindBigFencePieces(HashSet<GridCoord> block)
     {
         var fenceCount = 0;
         fenceCount += UpperFence(block);
@@ -35,25 +50,27 @@ public class Day12() : BaseDay(12), IDay
         fenceCount += LeftFence(block);
         return fenceCount;
     }
+
     private static int RightFence(HashSet<GridCoord> block)
     {
-        var rightFences = block.Count(x => x.fences.right);
+        var rightFences = block.Count(x => x.Fences.right);
         var distinctXs = block.DistinctBy(x => x.Coord.x).Select(x => x.Coord.x).ToList();
-        for (var x = 0; x < distinctXs.Count(); x++)
+        for (var x = 0; x < distinctXs.Count; x++)
         {
             var itemsWithUpperFence =
-                block.Where(gridCoord => gridCoord.Coord.x == distinctXs[x] && gridCoord.fences.right).OrderBy(x => x.Coord.y).ToList();
+                block.Where(gridCoord => gridCoord.Coord.x == distinctXs[x] && gridCoord.Fences.right)
+                    .OrderBy(x => x.Coord.y).ToList();
 
             rightFences += TopBottomFences(itemsWithUpperFence, false);
         }
 
         return rightFences;
     }
-    
+
     private static int TopBottomFences(List<GridCoord> itemsWithUpperFence, bool topBottomFences)
     {
         var count = 0;
-        for (var i = 0; i < itemsWithUpperFence.Count() - 1; i++)
+        for (var i = 0; i < itemsWithUpperFence.Count - 1; i++)
         {
             var first = itemsWithUpperFence[i];
             var neighbour = itemsWithUpperFence[i + 1];
@@ -65,47 +82,51 @@ public class Day12() : BaseDay(12), IDay
                     break;
             }
         }
+
         return count;
     }
 
     private static int LeftFence(HashSet<GridCoord> block)
     {
-        var leftFences = block.Count(x => x.fences.left);
+        var leftFences = block.Count(x => x.Fences.left);
         var distinctXs = block.DistinctBy(x => x.Coord.x).Select(x => x.Coord.x).ToList();
-        for (var x = 0; x < distinctXs.Count(); x++)
+        for (var x = 0; x < distinctXs.Count; x++)
         {
             var itemsWithUpperFence =
-                block.Where(gridCoord => gridCoord.Coord.x == distinctXs[x] && gridCoord.fences.left).OrderBy(x => x.Coord.y).ToList();
-            
+                block.Where(gridCoord => gridCoord.Coord.x == distinctXs[x] && gridCoord.Fences.left)
+                    .OrderBy(x => x.Coord.y).ToList();
+
             leftFences += TopBottomFences(itemsWithUpperFence, false);
         }
 
         return leftFences;
     }
+
     private static int UpperFence(HashSet<GridCoord> block)
     {
-        var upperFences = block.Count(x => x.fences.up);
+        var upperFences = block.Count(x => x.Fences.up);
         var distinctYs = block.DistinctBy(x => x.Coord.y).Select(x => x.Coord.y).ToList();
-        for (var y = 0; y < distinctYs.Count(); y++)
+        for (var y = 0; y < distinctYs.Count; y++)
         {
             var itemsWithUpperFence =
-                block.Where(x => x.Coord.y == distinctYs[y] && x.fences.up).OrderBy(x => x.Coord.x).ToList();
+                block.Where(x => x.Coord.y == distinctYs[y] && x.Fences.up).OrderBy(x => x.Coord.x).ToList();
             upperFences += TopBottomFences(itemsWithUpperFence, true);
         }
 
         return upperFences;
     }
+
     private static int LowerFence(HashSet<GridCoord> block)
     {
-        var lowerFences = block.Count(x => x.fences.bottom);
+        var lowerFences = block.Count(x => x.Fences.bottom);
         var distinctYs = block.DistinctBy(x => x.Coord.y).Select(x => x.Coord.y).ToList();
-        for (var y = 0; y < distinctYs.Count(); y++)
+        for (var y = 0; y < distinctYs.Count; y++)
         {
             var itemsWithLowerFence =
-                block.Where(x => x.Coord.y == distinctYs[y] && x.fences.bottom).OrderBy(x => x.Coord.x).ToList();
+                block.Where(x => x.Coord.y == distinctYs[y] && x.Fences.bottom).OrderBy(x => x.Coord.x).ToList();
             lowerFences += TopBottomFences(itemsWithLowerFence, true);
-
         }
+
         return lowerFences;
     }
 
@@ -115,10 +136,7 @@ public class Day12() : BaseDay(12), IDay
         var neighbours = CheckNeighbours(item, grid);
         neighbours.ExceptWith(returnSet);
         returnSet.UnionWith(neighbours);
-        foreach (var neighbour in neighbours)
-        {
-            returnSet.UnionWith(GetBlock(neighbour, grid, returnSet));
-        }
+        foreach (var neighbour in neighbours) returnSet.UnionWith(GetBlock(neighbour, grid, returnSet));
         return returnSet;
     }
 
@@ -126,51 +144,33 @@ public class Day12() : BaseDay(12), IDay
     {
         var ret = new HashSet<GridCoord>();
         var coord = grid.GetDown(item);
-        if (coord?.value == item.value)
+        if (coord?.Value == item.Value)
         {
             ret.Add(coord);
-            item.fences.bottom = false;
+            item.Fences.bottom = false;
         }
+
         coord = grid.GetRight(item);
-        if(coord?.value == item.value)
+        if (coord?.Value == item.Value)
         {
             ret.Add(coord);
-            item.fences.right = false;
+            item.Fences.right = false;
         }
+
         coord = grid.GetUp(item);
-        if(coord?.value == item.value)
+        if (coord?.Value == item.Value)
         {
             ret.Add(coord);
-            item.fences.up = false;
+            item.Fences.up = false;
         }
+
         coord = grid.GetLeft(item);
-        if(coord?.value == item.value)
+        if (coord?.Value == item.Value)
         {
             ret.Add(coord);
-            item.fences.left = false;
+            item.Fences.left = false;
         }
+
         return ret;
     }
-
-    public dynamic RunP2()
-    {
-        var grid = FileService.LoadGrid();
-        var items = grid.items;
-        var processed = new HashSet<GridCoord>();
-        var fenceCount = 0;
-        for (var x = 0; x < grid.maxX; x++)
-        {
-            for (var y = 0; y < grid.maxY; y++)
-            {
-                if(processed.Contains(items[x, y])) continue;
-                var returnSet = new HashSet<GridCoord>();
-                var block = GetBlock(items[x, y], grid, returnSet);
-                var bigFence = FindBigFencePieces(block, grid);
-                fenceCount +=  bigFence * block.Count;
-                processed.UnionWith(block);
-            }
-        }
-        return fenceCount;
-    }
-
 }

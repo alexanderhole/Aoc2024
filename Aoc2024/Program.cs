@@ -1,12 +1,4 @@
-﻿// See https://aka.ms/new-console-template for more information
-
-using System.Data.SqlTypes;
-using System.Diagnostics;
-using Aoc2024.Days._1;
-using Aoc2024.Days._2;
-using Aoc2024.Interfaces;
-using Microsoft.Extensions.DependencyInjection;
-Environment.SetEnvironmentVariable("test", "false");
+﻿Environment.SetEnvironmentVariable("test", "false");
 const int currentDay = 12;
 
 
@@ -23,12 +15,10 @@ var serviceProvider = new ServiceCollection()
     .AddKeyedSingleton<IDay, Day10>(10)
     .AddKeyedSingleton<IDay, Day11>(11)
     .AddKeyedSingleton<IDay, Day12>(12)
-
-
     .BuildServiceProvider();
-for (int i = currentDay; i <= currentDay; i++)
+for (var i = currentDay; i <= currentDay; i++)
 {
-    Stopwatch sw = new Stopwatch();
+    var sw = new Stopwatch();
     sw.Start();
     var runP1 = serviceProvider.GetKeyedService<IDay>(i).RunP1();
     sw.Stop();

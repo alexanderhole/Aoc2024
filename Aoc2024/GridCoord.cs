@@ -3,18 +3,12 @@ namespace Aoc2024;
 public class GridCoord
 {
     public (int x, int y) Coord;
-    public char value;
-    public char Direction;
-    public (bool up, bool left, bool right, bool bottom) fences = (true,true,true,true);
+    public (bool up, bool left, bool right, bool bottom) Fences = (true, true, true, true);
+    public char Value;
 
-    public int FenceCount
-    {
-        get
-        {
-            return (fences.right ? 1 : 0) +
-                   (fences.bottom ? 1 : 0) +
-                   (fences.up ? 1 : 0) +
-                   (fences.left ? 1 : 0);
-        }
-    }
+    public int FenceCount =>
+        (Fences.right ? 1 : 0) +
+        (Fences.bottom ? 1 : 0) +
+        (Fences.up ? 1 : 0) +
+        (Fences.left ? 1 : 0);
 }

@@ -1,6 +1,4 @@
 using System.Text.RegularExpressions;
-using Aoc2024.Days._1;
-using Aoc2024.Interfaces;
 
 namespace Aoc2024.Days._2;
 
@@ -19,7 +17,7 @@ public class Day3() : BaseDay(3), IDay
             var enumerable = regex.Matches(match)
                 .Where(x => !string.IsNullOrEmpty(x.Value)).ToList();
             result += enumerable
-                .Select(x => int.Parse(x.Value)).Aggregate((x,y) => x*y);
+                .Select(x => int.Parse(x.Value)).Aggregate((x, y) => x * y);
         }
 
         return result;
@@ -41,7 +39,7 @@ public class Day3() : BaseDay(3), IDay
             var enumerable = regex.Matches(match)
                 .Where(x => !string.IsNullOrEmpty(x.Value)).ToList();
             result += enumerable
-                .Select(x => int.Parse(x.Value)).Aggregate((x,y) => x*y);
+                .Select(x => int.Parse(x.Value)).Aggregate((x, y) => x * y);
         }
 
         return result;

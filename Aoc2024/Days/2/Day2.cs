@@ -1,16 +1,36 @@
-using Aoc2024.Days._1;
-using Aoc2024.Interfaces;
-
 namespace Aoc2024.Days._2;
 
 public class Day2() : BaseDay(2), IDay
 {
     public dynamic RunP1()
     {
-        return FileService.LoadIntLines().Count(row => checkSafe(row.ToArray()));
+        return FileService.LoadIntLines().Count(row => CheckSafe(row.ToArray()));
     }
 
-    private bool checkSafe(int[] levels)
+
+    public dynamic RunP2()
+    {
+        var safeReports = 0;
+        foreach (var row in FileService.LoadIntLines())
+        {
+            var safe = CheckSafe(row.ToArray());
+            if (safe)
+                safeReports += 1;
+            else
+                for (var i = 0; i < row.Count(); i++)
+                {
+                    var firstList = row.ToList();
+                    firstList.RemoveAt(i);
+                    if (!CheckSafe(firstList.ToArray())) continue;
+                    safeReports += 1;
+                    break;
+                }
+        }
+
+        return safeReports;
+    }
+
+    private bool CheckSafe(int[] levels)
     {
         return levels[0] != levels[1] && CheckSafe(levels, levels[0] < levels[1]);
     }
@@ -28,32 +48,12 @@ public class Day2() : BaseDay(2), IDay
                 if (firstLevel > secondLevel)
                     return false;
             }
-            else
-                if (firstLevel < secondLevel)
-                    return false;
+            else if (firstLevel < secondLevel)
+            {
+                return false;
+            }
         }
-        return true;
-    }
-    
 
-    public dynamic RunP2()
-    {
-        var safeReports = 0;
-        foreach (var row in FileService.LoadIntLines())
-        {
-            var safe = checkSafe(row.ToArray());
-            if(safe)
-                safeReports += 1;
-            else
-                for (var i = 0; i < row.Count(); i++)
-                {
-                    var firstList = row.ToList();
-                    firstList.RemoveAt(i);
-                    if (!checkSafe(firstList.ToArray())) continue;
-                    safeReports += 1;
-                    break;
-                }
-        }
-        return safeReports;
+        return true;
     }
 }
