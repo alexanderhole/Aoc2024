@@ -12,9 +12,9 @@ public class Day12() : BaseDay(12), IDay
         var items = grid.items;
         var processed = new HashSet<GridCoord>();
         var fenceCount = 0;
-        for (int x = 0; x < grid.maxX; x++)
+        for (var x = 0; x < grid.maxX; x++)
         {
-            for (int y = 0; y < grid.maxY; y++)
+            for (var y = 0; y < grid.maxY; y++)
             {
                 if(processed.Contains(items[x, y])) continue;
                 var returnSet = new HashSet<GridCoord>();
@@ -43,34 +43,41 @@ public class Day12() : BaseDay(12), IDay
         {
             var itemsWithUpperFence =
                 block.Where(gridCoord => gridCoord.Coord.x == distinctXs[x] && gridCoord.fences.right).OrderBy(x => x.Coord.y).ToList();
-            
-            for (var i = 0; i < itemsWithUpperFence.Count()-1; i++)
-            {
-                if (itemsWithUpperFence[i].Coord.y + 1 == itemsWithUpperFence[i + 1].Coord.y)
-                {
-                    rightFences -= 1;
-                }
-            }
+
+            rightFences += TopBottomFences(itemsWithUpperFence, false);
         }
 
         return rightFences;
     }
+    
+    private static int TopBottomFences(List<GridCoord> itemsWithUpperFence, bool topBottomFences)
+    {
+        var count = 0;
+        for (var i = 0; i < itemsWithUpperFence.Count() - 1; i++)
+        {
+            var first = itemsWithUpperFence[i];
+            var neighbour = itemsWithUpperFence[i + 1];
+            switch (topBottomFences)
+            {
+                case true when first.Coord.x + 1 == neighbour.Coord.x:
+                case false when first.Coord.y + 1 == neighbour.Coord.y:
+                    count -= 1;
+                    break;
+            }
+        }
+        return count;
+    }
+
     private static int LeftFence(HashSet<GridCoord> block)
     {
         var leftFences = block.Count(x => x.fences.left);
         var distinctXs = block.DistinctBy(x => x.Coord.x).Select(x => x.Coord.x).ToList();
-        for (int x = 0; x < distinctXs.Count(); x++)
+        for (var x = 0; x < distinctXs.Count(); x++)
         {
             var itemsWithUpperFence =
                 block.Where(gridCoord => gridCoord.Coord.x == distinctXs[x] && gridCoord.fences.left).OrderBy(x => x.Coord.y).ToList();
             
-            for (int i = 0; i < itemsWithUpperFence.Count()-1; i++)
-            {
-                if (itemsWithUpperFence[i].Coord.y + 1 == itemsWithUpperFence[i + 1].Coord.y)
-                {
-                    leftFences -= 1;
-                }
-            }
+            leftFences += TopBottomFences(itemsWithUpperFence, false);
         }
 
         return leftFences;
@@ -79,17 +86,11 @@ public class Day12() : BaseDay(12), IDay
     {
         var upperFences = block.Count(x => x.fences.up);
         var distinctYs = block.DistinctBy(x => x.Coord.y).Select(x => x.Coord.y).ToList();
-        for (int y = 0; y < distinctYs.Count(); y++)
+        for (var y = 0; y < distinctYs.Count(); y++)
         {
             var itemsWithUpperFence =
                 block.Where(x => x.Coord.y == distinctYs[y] && x.fences.up).OrderBy(x => x.Coord.x).ToList();
-            for (int i = 0; i < itemsWithUpperFence.Count() - 1; i++)
-            {
-                if (itemsWithUpperFence[i].Coord.x + 1 == itemsWithUpperFence[i + 1].Coord.x)
-                {
-                    upperFences -= 1;
-                }
-            }
+            upperFences += TopBottomFences(itemsWithUpperFence, true);
         }
 
         return upperFences;
@@ -98,17 +99,12 @@ public class Day12() : BaseDay(12), IDay
     {
         var lowerFences = block.Count(x => x.fences.bottom);
         var distinctYs = block.DistinctBy(x => x.Coord.y).Select(x => x.Coord.y).ToList();
-        for (int y = 0; y < distinctYs.Count(); y++)
+        for (var y = 0; y < distinctYs.Count(); y++)
         {
             var itemsWithLowerFence =
                 block.Where(x => x.Coord.y == distinctYs[y] && x.fences.bottom).OrderBy(x => x.Coord.x).ToList();
-            for (int i = 0; i < itemsWithLowerFence.Count() - 1; i++)
-            {
-                if (itemsWithLowerFence[i].Coord.x + 1 == itemsWithLowerFence[i + 1].Coord.x)
-                {
-                    lowerFences -= 1;
-                }
-            }
+            lowerFences += TopBottomFences(itemsWithLowerFence, true);
+
         }
         return lowerFences;
     }
@@ -162,16 +158,15 @@ public class Day12() : BaseDay(12), IDay
         var items = grid.items;
         var processed = new HashSet<GridCoord>();
         var fenceCount = 0;
-        for (int x = 0; x < grid.maxX; x++)
+        for (var x = 0; x < grid.maxX; x++)
         {
-            for (int y = 0; y < grid.maxY; y++)
+            for (var y = 0; y < grid.maxY; y++)
             {
                 if(processed.Contains(items[x, y])) continue;
                 var returnSet = new HashSet<GridCoord>();
                 var block = GetBlock(items[x, y], grid, returnSet);
                 var bigFence = FindBigFencePieces(block, grid);
-                var count = bigFence * block.Count();
-                fenceCount += count;
+                fenceCount +=  bigFence * block.Count;
                 processed.UnionWith(block);
             }
         }
