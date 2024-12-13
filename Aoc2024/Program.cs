@@ -1,5 +1,5 @@
 ﻿Environment.SetEnvironmentVariable("test", "false");
-const int currentDay = 12;
+const int currentDay = 13;
 
 
 var serviceProvider = new ServiceCollection()
@@ -15,6 +15,8 @@ var serviceProvider = new ServiceCollection()
     .AddKeyedSingleton<IDay, Day10>(10)
     .AddKeyedSingleton<IDay, Day11>(11)
     .AddKeyedSingleton<IDay, Day12>(12)
+    .AddKeyedSingleton<IDay, Day13>(13)
+
     .BuildServiceProvider();
 for (var i = currentDay; i <= currentDay; i++)
 {
