@@ -98,7 +98,7 @@ public class Day13() : BaseDay(13), IDay
     private List<(long a, long b)> GetPotentials(long target, int offsetA, int offsetB)
     {
         var list = new List<(long a, long b)>();
-        for(int i = 100; i >= 0; i--)
+        for(int i = (int)target; i >= 0; i--)
         {
             var res = i * offsetB;
 
@@ -128,39 +128,26 @@ public class Day13() : BaseDay(13), IDay
     }
     private List<(long a, long b, long cost)> GetPotentialsP2(long target, int offsetA, int offsetB, int yoffsetA, int yoffsetB, long yTarget)
     {
-        var biggest = offsetA;
-        if (offsetB * 3 >= offsetA)
-            biggest = offsetB;
-        //var biggest = new List<int>() { offsetA, offsetB*3 }.Max();
-        //var smallest = new List<int>() { offsetA, offsetB*3 }.Min();
+        var biggest = GetLargestPossible(offsetA, offsetB, target);
+        if (biggest.switched)
+            (offsetA, offsetB) = (offsetB, offsetA);
         var list = new List<(long a, long b, long cost)>();
-        //var smallest1 = (int)target/smallest;
-        for(int i = (int)target/biggest; i >= 0;  i-- )
+        for(int i = (int)biggest.i; i >= 0; i--)
         {
             var res = i * offsetB;
             if(res > target) continue;
-
-            var a = (target-res) % offsetA;
-            if (a != 0) continue;
-            var b = (target - res) / offsetA;
-            //if (i <= 100 && b <= 100)
+            if ((target-res) % offsetA == 0 )
             {
-                //if ((i * offsetA) + (b * offsetB) == target)
+                var b = (target - res) / offsetA;
+                if ((i * yoffsetA) + (b * yoffsetB) == yTarget)
                 {
-                    if ((yTarget - (i * yoffsetB)) % yoffsetA == 0)
-                    {
-                        var cost = GetCost((b, i));
-                        list.Add((b, i, cost));
-                        //break;
-                    }
+                   
+                        list.Add((i, b, GetCost((i, b))));
                 }
-                //else if ((b * offsetA) + (i * offsetB) == target)
+                if ((b * yoffsetA) + (i * yoffsetB) == yTarget)
                 {
-                    //   list.Add((b,i));
-                }
-                //else
-                {
-                    // throw new Exception();
+                    list.Add((b, i, GetCost((b, i))));
+                    
                 }
             }
         }
@@ -168,7 +155,35 @@ public class Day13() : BaseDay(13), IDay
         return list;
     }
 
-    
+
+    public (long i, bool switched) GetLargestPossible(long first, long second, long target)
+    {
+        var switched = false;
+        if (second * 3 < first)
+        {
+            (first, second) = (second, first);
+            switched = true;
+        }
+
+        for (int i = (int)target; i >= 0; i--)
+        {
+            var res = i * second;
+            if (res > target) continue;
+            var a = (target - res) % first;
+            if (a == 0)
+            {
+                var b = (target - res) / first;
+                {
+                    {
+                        return (b, switched);
+                    }
+                }
+            }
+
+        }
+        
+        return (0,switched);
+    }
 }
 
 public class Button
