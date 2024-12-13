@@ -1,4 +1,4 @@
-﻿Environment.SetEnvironmentVariable("test", "true");
+﻿Environment.SetEnvironmentVariable("test", "false");
 const int currentDay = 13;
 
 
