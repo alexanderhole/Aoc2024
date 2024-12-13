@@ -11,14 +11,16 @@ public class Day13() : BaseDay(13), IDay
         foreach (var machine in machines)
         {
             List<long> currentCosts = new();
-            var potentials = GetPotentials(machine.PrizeX, machine.A.X, machine.B.X);
-            var potentialsY = GetPotentials(machine.PrizeY, machine.A.Y, machine.B.Y);
-            var actualpotentials = potentials.Where(x => potentialsY.Where(y => y.a == x.a && y.b ==x.b).Count() > 0);            foreach (var potential in actualpotentials)
+            var potentials = GetPotentialsP2(machine.PrizeX, machine.A.X, machine.B.X, machine.A.Y, machine.B.Y, machine.PrizeY);
+            //var potentialsY = GetPotentialsP2(machine.PrizeY, machine.A.Y, machine.B.Y, machine.A.Y, machine.B.X, machine.PrizeX);
+            //var actualpotentials = potentials.Where(x => potentialsY.Where(y => y.a == x.a && y.b ==x.b).Count() > 0);
+            
+            foreach (var potential in potentials)
             {
-                currentCosts.Add(GetCost(potential));
+                currentCosts.Add(potential.cost);
             }
             if(currentCosts.Count() > 0)
-            costs.Add(currentCosts.Min());
+                costs.Add(currentCosts.Min());
         }
         
         return costs.Sum();
@@ -79,11 +81,11 @@ public class Day13() : BaseDay(13), IDay
         {
             Console.WriteLine("machine 1");
             List<long> currentCosts = new();
-            var potentials = GetPotentialsP2(machine.PrizeX, machine.A.X, machine.B.X);
-            var potentialsY = GetPotentialsP2(machine.PrizeY, machine.A.Y, machine.B.Y);
+            var potentials = GetPotentialsP2(machine.PrizeX, machine.A.X, machine.B.X, machine.A.Y, machine.B.Y, machine.PrizeY);
+            var potentialsY = GetPotentialsP2(machine.PrizeY, machine.A.Y, machine.B.Y, machine.A.X, machine.B.X, machine.PrizeX);
             var actualpotentials = potentials.Where(x => potentialsY.Where(y => y.a == x.a && y.b ==x.b).Count() > 0);            foreach (var potential in actualpotentials)
             {
-                currentCosts.Add(GetCost(potential));
+                currentCosts.Add(GetCost((potential.a, potential.b)));
             }
             if(currentCosts.Count() > 0)
                 costs.Add(currentCosts.Min());
@@ -123,17 +125,17 @@ public class Day13() : BaseDay(13), IDay
 
         return list;
     }
-    private List<(long a, long b)> GetPotentialsP2(long target, int offsetA, int offsetB)
+    private List<(long a, long b, long cost)> GetPotentialsP2(long target, int offsetA, int offsetB, int yoffsetA, int yoffsetB, long yTarget)
     {
-        var max = target / offsetA;
-        if (offsetB < offsetA)
-            max = target / offsetB;
-        var list = new List<(long a, long b)>();
-        for(int i = 1; i <= max; i = i + offsetB)
+        var biggest = new List<int>() { offsetA, offsetB }.Max();
+        var smallest = new List<int>() { offsetA, offsetB }.Min();
+        var list = new List<(long a, long b, long cost)>();
+        var smallest1 = (int)target/smallest;
+        for(int i = 0; i <= 100;  i++ )
         {
             var res = i * offsetB;
 
-            var a = (target-res) % offsetA;
+            var a = (target-(i * offsetB)) % offsetA;
             if(a == 0)
             {
                 var b = (target - res) / offsetA;
@@ -141,7 +143,11 @@ public class Day13() : BaseDay(13), IDay
                 {
                     //if ((i * offsetA) + (b * offsetB) == target)
                     {
-                        list.Add((b,i));
+                        if ((yTarget - (i * yoffsetB)) % yoffsetA == 0)
+                        {
+                            var cost = GetCost((b, i));
+                            list.Add((b, i, cost));
+                        }
                     }
                     //else if ((b * offsetA) + (i * offsetB) == target)
                     {

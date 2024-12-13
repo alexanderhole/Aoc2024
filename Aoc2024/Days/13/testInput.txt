@@ -1,15 +1,23 @@
-Button A: X+94, Y+34
-Button B: X+22, Y+67
-Prize: X=8400, Y=5400
+Button A: X+29, Y+71
+Button B: X+52, Y+31
+Prize: X=5388, Y=4716
 
-Button A: X+26, Y+66
-Button B: X+67, Y+21
-Prize: X=12748, Y=12176
+Button A: X+47, Y+16
+Button B: X+14, Y+21
+Prize: X=4795, Y=2996
 
-Button A: X+17, Y+86
-Button B: X+84, Y+37
-Prize: X=7870, Y=6450
+Button A: X+21, Y+11
+Button B: X+12, Y+60
+Prize: X=741, Y=2859
 
-Button A: X+69, Y+23
-Button B: X+27, Y+71
-Prize: X=18641, Y=10279
+Button A: X+61, Y+34
+Button B: X+17, Y+50
+Prize: X=2223, Y=12510
+
+Button A: X+49, Y+84
+Button B: X+71, Y+22
+Prize: X=6954, Y=8830
+
+Button A: X+63, Y+94
+Button B: X+79, Y+28
+Prize: X=3313, Y=2966
