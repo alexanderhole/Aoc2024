@@ -175,7 +175,7 @@ public class Day13() : BaseDay(13), IDay
                 var b = (target - res) / first;
                 {
                     {
-                        return (b, switched);
+                        return (i, switched);
                     }
                 }
             }
